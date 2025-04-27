@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import math
 from typing import Literal
 
-def plotter(type: Literal['degree_count_distibution', 'semi_log_plot', 'log_log_plot'], points, star_name, full_curve: bool, scatter=True, name='', xlabel='', ylabel=''):
+def plotter(type: Literal['degree_count_distibution', 'semi_log_plot', 'log_log_plot'], points, star_name, full_curve: bool, scatter=True, name='', xlabel='', ylabel='', plot: bool=True):
     x, y = zip(*points)
     if type == 'degree_count_distibution' or type == 'log_log_plot':
         if scatter:
@@ -29,7 +29,8 @@ def plotter(type: Literal['degree_count_distibution', 'semi_log_plot', 'log_log_
     else:
         plt.savefig(f'./ogle_star_data/precomputed_data/t14_region_curve/{directory}/Plots/{star_name}.png')
     
-    plt.show()
+    if plot:
+        plt.show()
     
     
 def plot_degree_vs_point_number(deg_points: list[int], star_name, full_curve: bool, xlabel='Point Number', ylabel='Degree', plot: bool = True) -> list[tuple[int, int]]:
@@ -58,20 +59,18 @@ def plot_degree_vs_point_number(deg_points: list[int], star_name, full_curve: bo
 
 def plot_degree_count_distribution(degree_count_distibution: dict[int, int|float], star_name, full_curve: bool, scatter=True, xlabel='Degree', ylabel='Probability/Occurence', plot: bool = True) -> list[tuple[int, int|float]]:
     points = degree_count_distibution.items()
-    if plot:
-        plotter('degree_count_distibution', points, star_name, full_curve, scatter, f'{star_name} Degree Distribution', xlabel, ylabel)
+    plotter('degree_count_distibution', points, star_name, full_curve, scatter, f'{star_name} Degree Distribution', xlabel, ylabel, plot=plot)
     return points
 
 
 def semi_log_plot_degree_distribution(degree_count_distibution: dict[int, int|float], star_name, full_curve: bool, scatter=True, xlabel='Degree', ylabel='Probability/Occurence', plot: bool = True) -> list[tuple[int, int|float]]:
     points = degree_count_distibution.items()
-    if plot:
-        plotter('semi_log_plot', points, star_name, full_curve, scatter, f'{star_name} Semilog Plot Degree Distribution', xlabel, ylabel)
-    return points
+    semi_log_probability_distribution = [(x, math.log(y)) for x, y in points]
+    plotter('semi_log_plot', points, star_name, full_curve, scatter, f'{star_name} Semilog Plot Degree Distribution', xlabel, ylabel, plot=plot)
+    return semi_log_probability_distribution
 
 def log_log_plot_degree_distribution(degree_count_distibution: dict[int, int|float], star_name, full_curve: bool, scatter=True, xlabel='log(degree)', ylabel='log(P)', plot: bool = True) -> list[tuple[float, float]]:
     points = degree_count_distibution.items()
     log_probability_distribution = [(math.log(x), math.log(y)) for x, y in points]
-    if plot:
-        plotter('log_log_plot', log_probability_distribution, star_name, full_curve, scatter, f'{star_name} Logarithmic Plot Degree Distribution', xlabel, ylabel)
+    plotter('log_log_plot', log_probability_distribution, star_name, full_curve, scatter, f'{star_name} Logarithmic Plot Degree Distribution', xlabel, ylabel, plot=plot)
     return log_probability_distribution

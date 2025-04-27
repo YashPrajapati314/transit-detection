@@ -104,7 +104,10 @@ def get_folded_curve_subset(star_data: StarData, use_full_curve: bool = True, pl
     else:
         plt.savefig(f'./ogle_star_data/precomputed_data/t14_region_curve/Phased Folded Light Curve Points/Plots/{star_name}.png')
 
-    plt.show()
+    if plot:
+        plt.show()
+    else:
+        plt.clf()
     
     subset_curve_points: list[tuple[float, float]] = [(subset_phase.iloc[i], subset_mag.iloc[i]) for i in range(len(subset_phase))]
     

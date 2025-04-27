@@ -44,7 +44,7 @@ def compute_star_data(star_name: str, compute_for_full_curve: bool, write: bool,
     
     star_data = read_star_data(star_name)
     
-    points = get_folded_curve_subset(star_data, use_full_curve=compute_for_full_curve)
+    points = get_folded_curve_subset(star_data, use_full_curve=compute_for_full_curve, plot=False)
     
     x, y = zip(*points)
     
@@ -84,31 +84,31 @@ def compute_star_data(star_name: str, compute_for_full_curve: bool, write: bool,
 
     semi_log_dist = semi_log_plot_degree_distribution(degree_prob_dist, star_name, full_curve=compute_for_full_curve, plot=False)
 
-    log_log_dist = log_log_plot_degree_distribution(degree_prob_dist, star_name, full_curve=compute_for_full_curve)
+    log_log_dist = log_log_plot_degree_distribution(degree_prob_dist, star_name, full_curve=compute_for_full_curve, plot=False)
     
-    range_str = input('Taking space separated input for range start and end (a and b): ')
+    # range_str = input('Taking space separated input for range start and end (a and b): ')
     
-    if range_str == '':
-        if compute_for_full_curve:
-            a, b = 3, 20
-        else:
-            a, b = 3, 6
-    else:
-        a, b = tuple(map(float, range_str.split()))
+    # if range_str == '':
+    #     if compute_for_full_curve:
+    #         a, b = 3, 20
+    #     else:
+    #         a, b = 3, 6
+    # else:
+    #     a, b = tuple(map(float, range_str.split()))
 
-    intercept, slope, sum_of_square_of_fit_errors, sum_of_square_of_all_errors = line_fit(star_name, log_log_dist, full_curve=compute_for_full_curve, filter_condition='between_a_and_b', a=a, b=b)
+    # intercept, slope, sum_of_square_of_fit_errors, sum_of_square_of_all_errors = line_fit(star_name, log_log_dist, full_curve=compute_for_full_curve, filter_condition='between_a_and_b', a=a, b=b)
     
     if write:
             
-        create_file_and_write_plot_data(star_name, points, plot_type='Phased Folded Light Curve Points', x_axis='Time', y_axis='Magnitude', parent_directory=parent_directory)
+        # create_file_and_write_plot_data(star_name, points, plot_type='Phased Folded Light Curve Points', x_axis='Time', y_axis='Magnitude', parent_directory=parent_directory)
             
-        create_file_and_write_plot_data(star_name, degree_of_each_point, plot_type='Degree of Each Point', x_axis='Point Number', y_axis='Degree', parent_directory=parent_directory)
+        # create_file_and_write_plot_data(star_name, degree_of_each_point, plot_type='Degree of Each Point', x_axis='Point Number', y_axis='Degree', parent_directory=parent_directory)
         
-        create_file_and_write_plot_data(star_name, deg_count_dist, plot_type='Degree Probability Distribution', x_axis='Degree', y_axis='Probability', parent_directory=parent_directory)
+        # create_file_and_write_plot_data(star_name, deg_count_dist, plot_type='Degree Probability Distribution', x_axis='Degree', y_axis='Probability', parent_directory=parent_directory)
         
         create_file_and_write_plot_data(star_name, semi_log_dist, plot_type='Semilog Degree Probability Distribution', x_axis='Degree', y_axis='Log(Probability)', parent_directory=parent_directory)
         
-        create_file_and_write_plot_data(star_name, log_log_dist, plot_type='Log Log Degree Probability Distribution', x_axis='Log(Degree)', y_axis='Log(Probability)', parent_directory=parent_directory)
+        # create_file_and_write_plot_data(star_name, log_log_dist, plot_type='Log Log Degree Probability Distribution', x_axis='Log(Degree)', y_axis='Log(Probability)', parent_directory=parent_directory)
         
-        create_file_and_write_line_fit_data(star_name, intercept, slope, sum_of_square_of_fit_errors, sum_of_square_of_all_errors, a, b, parent_directory)
+        # create_file_and_write_line_fit_data(star_name, intercept, slope, sum_of_square_of_fit_errors, sum_of_square_of_all_errors, a, b, parent_directory)
 

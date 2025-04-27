@@ -10,3 +10,6 @@ for id in range(1001, 1100):
     
     print(f'\nt14 Region\n')
     compute_star_data(star_name, compute_for_full_curve=False, write=True)
+    
+# compute_star_data(star_name='OGLE-TR-10', compute_for_full_curve=True, write=True)
+# compute_star_data(star_name='OGLE-TR-10', compute_for_full_curve=False, write=True)
