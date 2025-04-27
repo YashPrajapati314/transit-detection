@@ -1,11 +1,30 @@
 import matplotlib.pyplot as plt
 import math
+from typing import Literal
+
+def line_fit_condition_filter(original_points: list[tuple[float, float]], condition: Literal['between_a_and_b', 'first_a_after_first_b'], a: int|float, b: int|float) -> tuple[list[tuple[float, float]], list[str]]:
+    if condition == 'between_a_and_b':
+        points = [point for point in original_points if (point[0] > 1.5 and point[0] < 3.0)]
+        color_condition = ['purple' if (point[0] > a and point[0] < b) else 'blue' for point in original_points]
+        return points, color_condition
+    elif condition == 'first_a_after_first_b':
+        start_inclusive = a
+        end_inclusive = a + b - 1
+        points = original_points[start_inclusive:end_inclusive+1]
+        color_condition = ['purple' if (i >= start_inclusive and i <= end_inclusive) else 'blue' for i in range(len(original_points))]
+        return points, color_condition
 
 
-def line_fit(points: list[tuple[float, float]]):
-    points = [point for point in points if (point[0] > 1.5 and point[0] < 3.0)]
+def line_fit(star_name: str, original_points: list[tuple[float, float]], full_curve: bool, filter_condition: Literal['between_a_and_b', 'first_a_after_first_b'], a: int|float, b: int|float) -> tuple[float, float, float, float]:
+    # original_points.sort(key=lambda x: x[0])
+    points = list(original_points)
+    points, color_condition = line_fit_condition_filter(original_points, condition=filter_condition, a=a, b=b)
+    
     n = len(points)
 
+    all_x = [val[0] for val in original_points]
+    all_y = [val[1] for val in original_points]
+    
     x = [val[0] for val in points]
     y = [val[1] for val in points]
 
@@ -23,12 +42,33 @@ def line_fit(points: list[tuple[float, float]]):
 
     errors = [y[i] - line_fit_values[i] for i in range(len(y))]
 
-    sum_of_square_errors = sum(list(map(lambda x: x**2, errors)))
+    sum_of_square_of_fit_errors = sum(list(map(lambda x: x**2, errors)))
+    
+    all_line_fit_values = [b0 + b1 * val for val in all_x]
+
+    all_errors = [all_y[i] - all_line_fit_values[i] for i in range(len(y))]
+    
+    sum_of_square_of_all_errors = sum(list(map(lambda x: x**2, all_errors)))
 
     print(f'Ideal value of the intercept and slope (b0: {b0}, b1: {b1})')
-    print('Sum of square errors:', sum_of_square_errors)
+    print('Sum of square errors between only the points used to fit:', sum_of_square_of_fit_errors)
+    print('Sum of square errors between all the points:', sum_of_square_of_all_errors)
 
-    plt.scatter(x, y)
-    plt.plot(x, line_fit_values)
+    plt.scatter(all_x, all_y, c=color_condition, s=10)
+    plt.plot(all_x, all_line_fit_values, color='purple', label=f'Line Fit: y = {b1:.4f}x + {b0:.4f}')
     plt.grid(True)
+    plt.legend(fontsize=12)
+    xlabel='log(degree)'
+    ylabel='log(P)'
+    plt.xlabel(xlabel, fontsize=13)
+    plt.ylabel(ylabel, fontsize=13)
+    plt.title(f'{star_name} Log Log Degree Distribution \nLine Fit from Point {a+1} to Point {a+b}', fontsize=14)
+    
+    if full_curve:
+        plt.savefig(f'./ogle_star_data/precomputed_data/full_curve/Line Fit/Plots/{star_name}.png')
+    else:
+        plt.savefig(f'./ogle_star_data/precomputed_data/t14_region_curve/Line Fit/Plots/{star_name}.png')
+    
     plt.show()
+    
+    return b0, b1, sum_of_square_of_fit_errors, sum_of_square_of_all_errors

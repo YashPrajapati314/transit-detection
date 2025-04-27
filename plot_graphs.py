@@ -15,9 +15,9 @@ def plot_visibility_graph(points, graph):
                 y_vals = [points[i][1], points[j][1]]
                 plt.plot(x_vals, y_vals)
 
-    plt.xlabel("X")
-    plt.ylabel("Y")
-    plt.title("Visibility Graph")
+    plt.xlabel("X", fontsize=13)
+    plt.ylabel("Y", fontsize=13)
+    plt.title("Visibility Graph", fontsize=14)
     plt.grid(True, linestyle="--")
     plt.show()
 

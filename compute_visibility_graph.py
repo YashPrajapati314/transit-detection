@@ -1,4 +1,26 @@
-def visibility_graph(points: list[tuple[int|float, int|float]], already_sorted: bool = False) -> list[list[int]]:
+import json
+
+def visibility_graph(points: list[tuple[int|float, int|float]], full_curve: bool, already_sorted: bool = False, read_from_file_of_star: str = '', write_to_file_of_star: str = '') -> list[list[int]]:
+    # Do not use this feature, storing visibility graphs is taking a lot of space and can crash your device
+    if full_curve:
+        parent_directory = 'full_curve'
+    else:
+        parent_directory = 't14_region_curve'
+        
+    if read_from_file_of_star != '' and write_to_file_of_star != '' and read_from_file_of_star != write_to_file_of_star:
+        print('Read Write Name Mismatch')
+        return None
+    
+    if read_from_file_of_star != '':
+        with open(f'./ogle_star_data/precomputed_data/{parent_directory}/visibility_graphs.json') as f:
+            data: dict[str, list[list[int]]] = json.load(f)
+            visibility_graph_matrix = data.get(read_from_file_of_star)
+            if visibility_graph_matrix == None:
+                pass
+            else:
+                print(f'Reading data of precomputed visibility graph of {read_from_file_of_star}')
+                return visibility_graph_matrix
+        
     if not already_sorted:
         points.sort(key=lambda point: (point[0]))
     x_coords = [p[0] for p in points]
@@ -38,6 +60,18 @@ def visibility_graph(points: list[tuple[int|float, int|float]], already_sorted: 
         visibility_graph_subarray(x, y, k + 1, right, graph) 
 
     visibility_graph_subarray(y_coords, x_coords, 0, n - 1, graph)
+    
+    if write_to_file_of_star != '':
+        with open(f'./ogle_star_data/precomputed_data/{parent_directory}/visibility_graphs.json') as f:
+            data: dict[str, list[list[int]]] = json.load(f)
+            
+        data[write_to_file_of_star] = graph
+        
+        with open(f'./ogle_star_data/precomputed_data/{parent_directory}/visibility_graphs.json', 'w') as f:
+            json.dump(data, f)
+            # json.dump(data, f, separators=(',', ':'))
+            print(f'Stored the visibility graph for {write_to_file_of_star}')
+    
     return graph
 
 

@@ -11,7 +11,7 @@ class StarData:
         self.transit_epoch = transit_epoch
         self.margin_in_days = margin_in_days
 
-def read_star_data(star_name: str, margin_in_hours: float = None, main_directory = 'ogle_star_data', light_curve_directory='light_curves_csv', star_curve_info_filename = 'star_period_and_transit_time.csv', plot=False):
+def read_star_data(star_name: str, main_directory = 'ogle_star_data', light_curve_directory='light_curves_csv', star_curve_info_filename = 'star_period_and_transit_time.csv', plot=False):
     star_curve_info = pd.read_csv(os.path.join(main_directory, star_curve_info_filename))
     
     light_curve_data = pd.read_csv(os.path.join(main_directory, light_curve_directory, f'{star_name}.csv'))
@@ -26,6 +26,7 @@ def read_star_data(star_name: str, margin_in_hours: float = None, main_directory
     
     transit_epoch = float(star_of_interest['transit_epoch'].item())
     period = float(star_of_interest['period'].item())
+    margin_in_days = float(star_of_interest['t14'].item())
     
 
     # period = 50.23996  # days
@@ -44,8 +45,7 @@ def read_star_data(star_name: str, margin_in_hours: float = None, main_directory
         plt.grid(True)
         plt.tight_layout()
         plt.show()
-
-    margin_in_days = margin_in_hours / 24
+        
     
     star_data = StarData(star_name, light_curve_data, period, transit_epoch, margin_in_days)
     
@@ -53,7 +53,7 @@ def read_star_data(star_name: str, margin_in_hours: float = None, main_directory
 
 
 
-def get_folded_curve_subset(star_data: StarData, plot=True):
+def get_folded_curve_subset(star_data: StarData, use_full_curve: bool = True, plot=True):
     star_name = star_data.star_name
     light_curve = star_data.light_curve
     period = star_data.period
@@ -70,11 +70,16 @@ def get_folded_curve_subset(star_data: StarData, plot=True):
 
 
     phase = (((time - transit_epoch) + margin) % period) - margin
-
-    subset_phase = phase[(phase > -margin) & (phase < margin)] * 24
-    subset_time = light_curve[(phase > -margin) & (phase < margin)]["T"]
-    subset_mag = light_curve[(phase > -margin) & (phase < margin)]["Flux"]
-    subset_err = light_curve[(phase > -margin) & (phase < margin)]["E"]
+    
+    if use_full_curve:
+        pass
+        subset_phase = phase * 24
+        subset_mag = light_curve["Flux"]
+    else:
+        subset_phase = phase[(phase > -margin) & (phase < margin)] * 24
+        subset_time = light_curve[(phase > -margin) & (phase < margin)]["T"]
+        subset_mag = light_curve[(phase > -margin) & (phase < margin)]["Flux"]
+        subset_err = light_curve[(phase > -margin) & (phase < margin)]["E"]
     
     # print(subset_margin)
     # print(subset_period)
@@ -87,12 +92,18 @@ def get_folded_curve_subset(star_data: StarData, plot=True):
     
     plt.figure(figsize=(8, 5))
     plt.scatter(subset_phase, subset_mag, s=3, color='black')
-    plt.xlabel("Orbital Phase")
-    plt.ylabel("I Magnitude")    
-    plt.title(f"{star_name} Phase-Folded Light Curve")
+    plt.xlabel("Orbital Phase", fontsize=13)
+    plt.ylabel("I Magnitude", fontsize=13)
+    plt.title(f"{star_name} Phase-Folded Light Curve", fontsize=14)
     plt.gca().invert_yaxis()
     # plt.grid(True)
     plt.tight_layout()
+    
+    if use_full_curve:
+        plt.savefig(f'./ogle_star_data/precomputed_data/full_curve/Phased Folded Light Curve Points/Plots/{star_name}.png')
+    else:
+        plt.savefig(f'./ogle_star_data/precomputed_data/t14_region_curve/Phased Folded Light Curve Points/Plots/{star_name}.png')
+
     plt.show()
     
     subset_curve_points: list[tuple[float, float]] = [(subset_phase.iloc[i], subset_mag.iloc[i]) for i in range(len(subset_phase))]
