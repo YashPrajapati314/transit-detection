@@ -56,3 +56,4 @@ def plot_relation_for_all_stars():
     
 
 plot_relation_for_all_stars()
+
