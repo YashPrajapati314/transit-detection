@@ -86,7 +86,7 @@ def compute_star_data(star_name: str, compute_for_full_curve: bool, write: bool,
 
     log_log_dist = log_log_plot_degree_distribution(degree_prob_dist, star_name, full_curve=compute_for_full_curve)
     
-    range_str = input('Taking space separated input for a and b (leaves a points and picks b points from the (a+1)th point): ')
+    range_str = input('Taking space separated input for range start and end (a and b): ')
     
     if range_str == '':
         if compute_for_full_curve:
@@ -94,9 +94,9 @@ def compute_star_data(star_name: str, compute_for_full_curve: bool, write: bool,
         else:
             a, b = 3, 6
     else:
-        a, b = tuple(map(int, range_str.split()))
+        a, b = tuple(map(float, range_str.split()))
 
-    intercept, slope, sum_of_square_of_fit_errors, sum_of_square_of_all_errors = line_fit(star_name, log_log_dist, full_curve=compute_for_full_curve, filter_condition='first_a_after_first_b', a=a, b=b)
+    intercept, slope, sum_of_square_of_fit_errors, sum_of_square_of_all_errors = line_fit(star_name, log_log_dist, full_curve=compute_for_full_curve, filter_condition='between_a_and_b', a=a, b=b)
     
     if write:
             

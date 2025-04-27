@@ -2,23 +2,25 @@ import matplotlib.pyplot as plt
 import math
 from typing import Literal
 
-def line_fit_condition_filter(original_points: list[tuple[float, float]], condition: Literal['between_a_and_b', 'first_a_after_first_b'], a: int|float, b: int|float) -> tuple[list[tuple[float, float]], list[str]]:
+def line_fit_condition_filter(original_points: list[tuple[float, float]], condition: Literal['between_a_and_b', 'first_a_after_first_b'], a: int|float, b: int|float) -> tuple[list[tuple[float, float]], list[str], int, int]:
     if condition == 'between_a_and_b':
-        points = [point for point in original_points if (point[0] > 1.5 and point[0] < 3.0)]
-        color_condition = ['purple' if (point[0] > a and point[0] < b) else 'blue' for point in original_points]
-        return points, color_condition
+        points = [point for point in original_points if (point[0] >= a and point[0] <= b)]
+        color_condition = ['purple' if (point[0] >= a and point[0] <= b) else 'blue' for point in original_points]
+        point_start = color_condition.index('purple')
+        point_end = len(original_points) - list(reversed(color_condition)).index('purple') - 1
+        return points, color_condition, point_start, point_end
     elif condition == 'first_a_after_first_b':
         start_inclusive = a
         end_inclusive = a + b - 1
         points = original_points[start_inclusive:end_inclusive+1]
         color_condition = ['purple' if (i >= start_inclusive and i <= end_inclusive) else 'blue' for i in range(len(original_points))]
-        return points, color_condition
+        return points, color_condition, a, b
 
 
 def line_fit(star_name: str, original_points: list[tuple[float, float]], full_curve: bool, filter_condition: Literal['between_a_and_b', 'first_a_after_first_b'], a: int|float, b: int|float) -> tuple[float, float, float, float]:
     # original_points.sort(key=lambda x: x[0])
     points = list(original_points)
-    points, color_condition = line_fit_condition_filter(original_points, condition=filter_condition, a=a, b=b)
+    points, color_condition, a, b = line_fit_condition_filter(original_points, condition=filter_condition, a=a, b=b)
     
     n = len(points)
 
@@ -62,7 +64,7 @@ def line_fit(star_name: str, original_points: list[tuple[float, float]], full_cu
     ylabel='log(P)'
     plt.xlabel(xlabel, fontsize=13)
     plt.ylabel(ylabel, fontsize=13)
-    plt.title(f'{star_name} Log Log Degree Distribution \nLine Fit from Point {a+1} to Point {a+b}', fontsize=14)
+    plt.title(f'{star_name} Log Log Degree Distribution \nLine Fit from Point {a+1} to Point {b+1}', fontsize=14)
     
     if full_curve:
         plt.savefig(f'./ogle_star_data/precomputed_data/full_curve/Line Fit/Plots/{star_name}.png')
