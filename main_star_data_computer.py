@@ -62,15 +62,15 @@ def compute_star_data(star_name: str, compute_for_full_curve: bool, write: bool,
         print(f'Fetching data from {degree_of_each_point_file_path}')
         df = pd.read_csv(degree_of_each_point_file_path)
         degree_of_each_point: list[tuple[int, int]] = list(df.itertuples(index=False, name=None))
-        temp = plot_degree_vs_point_number([val[1] for val in degree_of_each_point], star_name, full_curve=compute_for_full_curve)
+        temp = plot_degree_vs_point_number([val[1] for val in degree_of_each_point], star_name, full_curve=compute_for_full_curve, plot=False)
     else:
         graph = visibility_graph(new_points, full_curve=compute_for_full_curve)
         
-        plot_visibility_graph(new_points, graph)
+        # plot_visibility_graph(new_points, graph)
         
         deg_points = degrees_of_points(graph)
         
-        degree_of_each_point = plot_degree_vs_point_number(deg_points, star_name, full_curve=compute_for_full_curve)
+        degree_of_each_point = plot_degree_vs_point_number(deg_points, star_name, full_curve=compute_for_full_curve, plot=False)
         
         # plot_visibility_graph(points, graph)
 
@@ -80,9 +80,9 @@ def compute_star_data(star_name: str, compute_for_full_curve: bool, write: bool,
 
     degree_prob_dist = degree_count_probability_distribution(degree_of_each_point)
 
-    deg_count_dist = plot_degree_count_distribution(degree_prob_dist, star_name, full_curve=compute_for_full_curve)
+    deg_count_dist = plot_degree_count_distribution(degree_prob_dist, star_name, full_curve=compute_for_full_curve, plot=False)
 
-    semi_log_dist = semi_log_plot_degree_distribution(degree_prob_dist, star_name, full_curve=compute_for_full_curve)
+    semi_log_dist = semi_log_plot_degree_distribution(degree_prob_dist, star_name, full_curve=compute_for_full_curve, plot=False)
 
     log_log_dist = log_log_plot_degree_distribution(degree_prob_dist, star_name, full_curve=compute_for_full_curve)
     
