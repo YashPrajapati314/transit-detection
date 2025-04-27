@@ -1,6 +1,6 @@
 from main_star_data_computer import compute_star_data
 
-for id in range(1001, 1100):
+for id in range(1062, 1063):
     star_name = f'OGLE-TR-{id}'
     
     print(f'\n{star_name}\n')
