@@ -5,7 +5,7 @@ from plot_graphs import plot_visibility_graph
 from compute_degree_distribution import degree_count_distribution, degree_count_probability_distribution, degrees_of_points
 from plot_degree_distribution import *
 from star_data_reader_plotter import get_folded_curve_subset, read_star_data
-from fit_line import line_fit
+from fit_line import line_fit, my_line_fit_algorithm
 
 def create_file_and_write_plot_data(star_name: str, points: list[tuple[int | float, int | float]], plot_type: str, x_axis: str, y_axis: str, parent_directory: str):
     columns = [x_axis, y_axis]
@@ -86,17 +86,23 @@ def compute_star_data(star_name: str, compute_for_full_curve: bool, write: bool,
 
     log_log_dist = log_log_plot_degree_distribution(degree_prob_dist, star_name, full_curve=compute_for_full_curve, plot=plot_log_log_dist, write=write)
     
-    range_str = input('Taking space separated input for range start and end (a and b): ')
+    # midpoint_near_point_number, points_to_consider_on_each_side = input('Midpoint near and neigbours: ').split()
     
-    if range_str == '':
-        if compute_for_full_curve:
-            a, b = 3, 20
-        else:
-            a, b = 3, 6
-    else:
-        a, b = tuple(map(float, range_str.split()))
+    # my_line_fit_algorithm(star_name, log_log_dist, float(midpoint_near_point_number), int(points_to_consider_on_each_side))
+    
+    my_line_fit_algorithm(star_name, log_log_dist, 2.196, 3)
+    
+    # range_str = input('Taking space separated input for range start and end (a and b): ')
+    
+    # if range_str == '':
+    #     if compute_for_full_curve:
+    #         a, b = 3, 20
+    #     else:
+    #         a, b = 3, 6
+    # else:
+    #     a, b = tuple(map(float, range_str.split()))
 
-    intercept, slope, sum_of_square_of_fit_errors, sum_of_square_of_all_errors = line_fit(star_name, log_log_dist, full_curve=compute_for_full_curve, filter_condition='between_a_and_b', a=a, b=b)
+    # intercept, slope, sum_of_square_of_fit_errors, sum_of_square_of_all_errors = line_fit(star_name, log_log_dist, full_curve=compute_for_full_curve, filter_condition='between_a_and_b', a=a, b=b)
     
     if write:
             
