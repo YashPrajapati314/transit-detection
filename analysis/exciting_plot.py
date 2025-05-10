@@ -37,7 +37,9 @@ def plot_relation_for_all_stars():
         'full_light_curve_vg_slope': df_full['slope'],
         'full_light_curve_vg_intercept': df_full['intercept'],
         't14_light_curve_vg_slope': df_t14['slope'],
-        't14_light_curve_vg_intercept': df_t14['intercept']
+        't14_light_curve_vg_intercept': df_t14['intercept'],
+        'full_intercept_vs_t14_intercept': df_full['intercept'] / df_t14['intercept'],
+        'full_slope_vs_t14_slope': df_full['slope'] / df_t14['slope']
     })
 
     star_names = complete_df['star'].tolist()
@@ -46,7 +48,7 @@ def plot_relation_for_all_stars():
 
     print(complete_df)
 
-    confirmed_transits = ['OGLE-TR-10', 'OGLE-TR-56']
+    confirmed_transits = ['OGLE-TR-10', 'OGLE-TR-56', 'OGLE-TR-111', 'OGLE-TR-132', 'OGLE-TR-182', 'OGLE-TR-211']
 
     colour_map = ['blue' if star_name in confirmed_transits else 'lightseagreen' for star_name in star_names]
     
@@ -54,6 +56,7 @@ def plot_relation_for_all_stars():
     plot_slope_vs_inter(df=df_full, colour_map=colour_map, title='Slope vs Intercept of Full VG Curves of OGLE stars')
     plot_slope_ratio_vs_inter_ratio(complete_df=complete_df, colour_map=colour_map)
     
+    complete_df.to_csv('temp.csv')
 
 plot_relation_for_all_stars()
 
