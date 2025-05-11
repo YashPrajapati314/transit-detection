@@ -85,9 +85,9 @@ def visibility_graph_range_wise(points: list[tuple[int|float, int|float]], full_
         parent_directory = 'full_curve'
     else:
         parent_directory = 't14_region_curve'
-        
-    transit_start = -1 * t14 / 2
-    transit_end = t14 / 2
+    
+    transit_start = (-1 * t14 / 2) * 24
+    transit_end = (t14 / 2) * 24
     
     # print('!!!')
     # print(transit_start)

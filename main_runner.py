@@ -14,14 +14,14 @@ for id in range(1001, 1100):
                       plot_semi_log_dist=False
                     )
     
-    print(f'\nt14 Region\n')
-    compute_star_data(star_name, compute_for_full_curve=False, write=True,
-                      plot_deg_count_dist=False,
-                      plot_degree_of_each_point=False,
-                      plot_folded_curve_subset=False,
-                      plot_log_log_dist=False,
-                      plot_semi_log_dist=False
-                    )
+    # print(f'\nt14 Region\n')
+    # compute_star_data(star_name, compute_for_full_curve=False, write=True,
+    #                   plot_deg_count_dist=False,
+    #                   plot_degree_of_each_point=False,
+    #                   plot_folded_curve_subset=False,
+    #                   plot_log_log_dist=False,
+    #                   plot_semi_log_dist=False
+    #                 )
     
 confirmed_transits = ['OGLE-TR-10', 'OGLE-TR-56', 'OGLE-TR-111', 'OGLE-TR-132', 'OGLE-TR-211']
 
@@ -37,14 +37,14 @@ for star_name in confirmed_transits:
                       plot_semi_log_dist=False
                     )
     
-    print(f'\nt14 Region\n')
-    compute_star_data(star_name, compute_for_full_curve=False, write=True,
-                      plot_deg_count_dist=False,
-                      plot_degree_of_each_point=False,
-                      plot_folded_curve_subset=False,
-                      plot_log_log_dist=False,
-                      plot_semi_log_dist=False
-                    )
+    # print(f'\nt14 Region\n')
+    # compute_star_data(star_name, compute_for_full_curve=False, write=True,
+    #                   plot_deg_count_dist=False,
+    #                   plot_degree_of_each_point=False,
+    #                   plot_folded_curve_subset=False,
+    #                   plot_log_log_dist=False,
+    #                   plot_semi_log_dist=False
+    #                 )
     
 # print(f'\n{"OGLE-TR-211"}\n')
 
