@@ -2,8 +2,18 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 def plot_relation(df: pd.DataFrame, colour_map: list[str], xlabel='Non Transiting Region Average Degree', ylabel='Transiting Region Average Degree', title='', plot: bool = True):
-    plt.scatter(df['non_transit_avg_k'], df['during_transit_avg_k'], s=15, c=colour_map)
-    plt.plot([5, 8], [5, 8])
+    before_transit_avg_k = list(df['before_transit_avg_k'])
+    during_transit_avg_k = list(df['during_transit_avg_k'])
+    after_transit_avg_k = list(df['after_transit_avg_k'])
+    
+    before_transit_avg_k_1 = [1 for _ in range(len(before_transit_avg_k))]
+    during_transit_avg_k_2 = [2 for _ in range(len(during_transit_avg_k))]
+    after_transit_avg_k_3 = [3 for _ in range(len(after_transit_avg_k))]
+    
+    final_x = before_transit_avg_k_1 + during_transit_avg_k_2 + after_transit_avg_k_3
+    final_y = before_transit_avg_k + during_transit_avg_k + after_transit_avg_k
+    
+    plt.scatter(final_x, final_y, s=5)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     plt.title(title)
@@ -12,16 +22,7 @@ def plot_relation(df: pd.DataFrame, colour_map: list[str], xlabel='Non Transitin
     else:
         plt.close()
 
-
-def plot_slope_ratio_vs_inter_ratio(complete_df: pd.DataFrame, colour_map: list[str], plot: bool = True):
-    plt.scatter(complete_df['full_light_curve_vg_slope'] / complete_df['t14_light_curve_vg_slope'], complete_df['full_light_curve_vg_intercept'] / complete_df['t14_light_curve_vg_intercept'], s=15, c=colour_map)
-    plt.xlabel('Full Slope / t14 Slope')
-    plt.ylabel('Full Intercept / t14 Intercept')
-    plt.title('Slope Ratio vs Intercept Ratio of VG Curves of OGLE stars')
-    if plot:
-        plt.show()
-    else:
-        plt.close()
+        
         
 
 def plot_relation_for_all_stars():
