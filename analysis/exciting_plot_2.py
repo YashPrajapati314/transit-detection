@@ -2,7 +2,13 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 def plot_relation(df: pd.DataFrame, colour_map: list[str], xlabel='Non Transiting Region Average Degree', ylabel='Transiting Region Average Degree', title='', plot: bool = True):
-    plt.scatter(df['non_transit_avg_k'], df['during_transit_avg_k'], s=15, c=colour_map)
+    non_transit_avg_k = list(df['non_transit_avg_k'])
+    during_transit_avg_k = list(df['during_transit_avg_k'])
+    plt.scatter(non_transit_avg_k, during_transit_avg_k, s=15, c=colour_map)
+    star_names: list[str] = list(df['star'])
+    star_ids: list[str] = list(map(lambda x: x.split('-')[-1], star_names))
+    for i in range(len(star_ids)):
+        plt.annotate(star_ids[i], (non_transit_avg_k[i], during_transit_avg_k[i]), textcoords="offset points", xytext=(0,5), ha='center', fontsize=6)
     plt.plot([5, 8], [5, 8])
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
