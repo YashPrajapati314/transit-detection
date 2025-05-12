@@ -65,20 +65,25 @@ def compute_star_data(star_name: str, compute_for_full_curve: bool, write: bool,
     star_data = read_star_data(star_name)
     
     points = get_folded_curve_subset(star_data, use_full_curve=compute_for_full_curve, plot=plot_folded_curve_subset)
+    points_for_rangewise_vg = get_folded_curve_subset(star_data, use_full_curve=True, plot=False)
     
     x, y = zip(*points)
-    
     n = len(x)
-
     new_y = [val*-1 for val in y]
-
     new_points = [(x[i], new_y[i]) for i in range(n)]
+    
+    
+    x_rangewise, y_rangewise = zip(*points_for_rangewise_vg)
+    n_rangewise = len(x_rangewise)
+    new_y_rangewise = [val*-1 for val in y_rangewise]
+    new_points_rangewise = [(x_rangewise[i], new_y_rangewise[i]) for i in range(n_rangewise)]
+
+
     
     plot_types = ['Phased Folded Light Curve Points', 'Degree of Each Point', 'Degree Probability Distribution', 'Semilog Degree Probability Distribution', 'Log Log Degree Probability Distribution']
     
-    degree_of_each_point_file_path = f'./ogle_star_data/precomputed_data/{parent_directory}/Degree of Each Point/{star_name}.csv'
     
-    left_graph, mid_graph, right_graph = visibility_graph_range_wise(new_points, full_curve=True, t14=star_data.margin_in_days)
+    left_graph, mid_graph, right_graph = visibility_graph_range_wise(star_name, new_points_rangewise, full_curve=True, t14=star_data.t14_in_days)
         
     deg_left_points = degrees_of_points(left_graph)
     deg_mid_points = degrees_of_points(mid_graph)
@@ -93,13 +98,15 @@ def compute_star_data(star_name: str, compute_for_full_curve: bool, write: bool,
     print(avg_k_left, avg_k_mid, avg_k_right)
     print()
     
+    degree_of_each_point_file_path = f'./ogle_star_data/precomputed_data/{parent_directory}/Degree of Each Point/{star_name}.csv'
+    
     if os.path.exists(degree_of_each_point_file_path) and not recompute_star_data:
         print(f'Fetching data from {degree_of_each_point_file_path}')
         df = pd.read_csv(degree_of_each_point_file_path)
         degree_of_each_point: list[tuple[int, int]] = list(df.itertuples(index=False, name=None))
         temp = plot_degree_vs_point_number([val[1] for val in degree_of_each_point], star_name, full_curve=compute_for_full_curve, plot=plot_degree_of_each_point, write=write)
     else:
-        graph = visibility_graph(new_points, full_curve=compute_for_full_curve)
+        graph = visibility_graph(star_name=star_name, points=new_points, full_curve=compute_for_full_curve)
         # plot_visibility_graph(new_points, graph)
         
         
@@ -170,4 +177,6 @@ def compute_star_data(star_name: str, compute_for_full_curve: bool, write: bool,
         
         # create_file_and_write_line_fit_data(star_name, intercept, slope, sum_of_square_of_fit_errors, sum_of_square_of_all_errors, a, b, parent_directory, semilog=for_semilog)
 
-        create_file_and_write_avg_k_for_each_region(star_name, avg_k_left, avg_k_mid, avg_k_right, parent_directory)
+        # create_file_and_write_avg_k_for_each_region(star_name, avg_k_left, avg_k_mid, avg_k_right, parent_directory)
+        
+        pass

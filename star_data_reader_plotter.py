@@ -4,12 +4,12 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 class StarData:
-    def __init__(self, star_name: str, light_curve: pd.DataFrame, period: float, transit_epoch: float, margin_in_days: float):
+    def __init__(self, star_name: str, light_curve: pd.DataFrame, period: float, transit_epoch: float, t14_in_days: float):
         self.star_name = star_name
         self.light_curve = light_curve
         self.period = period
         self.transit_epoch = transit_epoch
-        self.margin_in_days = margin_in_days
+        self.t14_in_days = t14_in_days
 
 def read_star_data(star_name: str, main_directory = 'ogle_star_data', light_curve_directory='light_curves_csv', star_curve_info_filename = 'star_period_and_transit_time.csv', plot=False):
     star_curve_info = pd.read_csv(os.path.join(main_directory, star_curve_info_filename))
@@ -26,7 +26,7 @@ def read_star_data(star_name: str, main_directory = 'ogle_star_data', light_curv
     
     transit_epoch = float(star_of_interest['transit_epoch'].item())
     period = float(star_of_interest['period'].item())
-    margin_in_days = float(star_of_interest['t14'].item())
+    t14_in_days = float(star_of_interest['t14'].item())
     
 
     # period = 50.23996  # days
@@ -47,7 +47,7 @@ def read_star_data(star_name: str, main_directory = 'ogle_star_data', light_curv
         plt.show()
         
     
-    star_data = StarData(star_name, light_curve_data, period, transit_epoch, margin_in_days)
+    star_data = StarData(star_name, light_curve_data, period, transit_epoch, t14_in_days)
     
     return star_data
 
@@ -58,7 +58,7 @@ def get_folded_curve_subset(star_data: StarData, use_full_curve: bool = True, pl
     light_curve = star_data.light_curve
     period = star_data.period
     transit_epoch = star_data.transit_epoch
-    margin = star_data.margin_in_days
+    margin = star_data.t14_in_days
 
     # Access columns using column names
     time = light_curve["T"]
