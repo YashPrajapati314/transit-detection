@@ -107,7 +107,7 @@ def get_folded_curve_subset(star_data: StarData, use_full_curve: bool = True, pl
     if plot:
         plt.show()
     else:
-        plt.clf()
+        plt.close()
     
     subset_curve_points: list[tuple[float, float]] = [(subset_phase.iloc[i], subset_mag.iloc[i]) for i in range(len(subset_phase))]
     

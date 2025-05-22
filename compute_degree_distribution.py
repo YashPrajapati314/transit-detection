@@ -1,3 +1,6 @@
+import numpy as np
+import networkx as nx
+
 def degree_count_distribution(degree_of_each_point: list[tuple[int, int]], increment_extreme_point_degrees: bool = True) -> dict[int, int]:
     degree_counts: dict[int, int] = dict()
     for point_num, degree in degree_of_each_point:
@@ -24,3 +27,16 @@ def degrees_of_points(graph: list[list[int]], increment_extreme_point_degrees: b
         current_number_of_occurences = degree_counts.get(degree, 0)
         degree_counts[degree] = current_number_of_occurences + 1
     return degrees_of_points_list
+
+def clustering_coefficients_of_points(graph: list[list[int]], degrees_of_each_point: list[int] | None = None) -> list[float]:
+    if degrees_of_each_point == None:
+        degrees_of_each_point = degrees_of_points(graph)
+    G: nx.classes.graph.Graph = nx.from_numpy_array(np.array(graph))
+    triangle_counts: dict[int, int] = nx.triangles(G)
+    triangles_containing_each_point: list[int] = list(triangle_counts.values())
+    if len(triangles_containing_each_point) != len(degrees_of_each_point):
+        print('Length mismatch error while computing clustering coefficient')
+    else:
+        n = len(triangles_containing_each_point)
+        clustering_coefficients_of_each_point: list[float] = [2 * triangles_containing_each_point[i] / (degrees_of_each_point[i] * (degrees_of_each_point[i] - 1)) for i in range(n)]
+        return clustering_coefficients_of_each_point

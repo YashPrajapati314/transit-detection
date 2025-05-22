@@ -1,7 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-def plot_relation(df: pd.DataFrame, colour_map: list[str], xlabel='Non Transiting Region Average Degree', ylabel='Transiting Region Average Degree', title='', plot: bool = True):
+def plot_relation(df: pd.DataFrame, colour_map: list[str], xlabel='Region', ylabel='Average Degree', title='', plot: bool = True):
     before_transit_avg_k = list(df['before_transit_avg_k'])
     during_transit_avg_k = list(df['during_transit_avg_k'])
     after_transit_avg_k = list(df['after_transit_avg_k'])
@@ -12,8 +12,12 @@ def plot_relation(df: pd.DataFrame, colour_map: list[str], xlabel='Non Transitin
     
     final_x = before_transit_avg_k_1 + during_transit_avg_k_2 + after_transit_avg_k_3
     final_y = before_transit_avg_k + during_transit_avg_k + after_transit_avg_k
+    final_color_map = colour_map + colour_map + colour_map
     
-    plt.scatter(final_x, final_y, s=5)
+    # for _, row in df.iterrows():
+    #     plt.plot([1, 2, 3], [row['before_transit_avg_k'], row['during_transit_avg_k'], row['after_transit_avg_k']])
+    
+    plt.scatter(final_x, final_y, s=5, c=final_color_map)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     plt.title(title)
@@ -26,7 +30,7 @@ def plot_relation(df: pd.DataFrame, colour_map: list[str], xlabel='Non Transitin
         
 
 def plot_relation_for_all_stars():
-    df = pd.read_csv('../ogle_star_data/precomputed_data/avg_k_regionwise.csv')
+    df = pd.read_csv('../ogle_star_data/precomputed_data/average_k_regionwise/avg_k_regionwise.csv')
 
     complete_df = pd.DataFrame({
         'star': df['star_name'],

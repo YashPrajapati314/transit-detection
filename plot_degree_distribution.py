@@ -34,7 +34,7 @@ def plotter(type: Literal['degree_count_distibution', 'semi_log_plot', 'log_log_
     if plot:
         plt.show()
     
-    plt.clf()
+    plt.close()
     
     
 def plot_degree_vs_point_number(deg_points: list[int], star_name, full_curve: bool, xlabel='Point Number', ylabel='Degree', plot: bool = True, write: bool = False) -> list[tuple[int, int]]:
@@ -57,7 +57,7 @@ def plot_degree_vs_point_number(deg_points: list[int], star_name, full_curve: bo
     if plot:
         plt.show()
     
-    plt.clf()
+    plt.close()
     
     points = [(x[i], y[i]) for i in range(len(deg_points))]
     

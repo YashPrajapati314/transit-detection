@@ -9,7 +9,7 @@ import networkx as nx
 
 points = [(1,2), (2,8), (3.5,4), (3,4), (4,5), (5,7), (6,8)]
 
-graph = visibility_graph(points, full_curve=True)
+graph = visibility_graph(star_name='', points=points, full_curve=True)
 
 plot_visibility_graph(points, graph)
 

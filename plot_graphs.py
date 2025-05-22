@@ -23,3 +23,14 @@ def plot_visibility_graph(points, graph):
 
 
 
+def plot_light_curve(star_name: str, points: list[tuple[float, float]]):
+    plt.figure(figsize=(8, 5))
+    x, y = zip(*points)
+    plt.scatter(x, y, s=3, color='black')
+    plt.xlabel("Orbital Phase", fontsize=13)
+    plt.ylabel("I Magnitude", fontsize=13)
+    plt.title(f"{star_name} Phase-Folded Light Curve", fontsize=14)
+    plt.gca().invert_yaxis()
+    # plt.grid(True)
+    plt.tight_layout()
+    plt.show()

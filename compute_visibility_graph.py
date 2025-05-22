@@ -97,10 +97,10 @@ def visibility_graph_range_wise(star_name: str, points: list[tuple[int|float, in
     if not already_sorted:
         points.sort(key=lambda point: (point[0]))
     
-    if full_curve:
-        parent_directory = 'full_curve'
-    else:
-        parent_directory = 't14_region_curve'
+    # if full_curve:
+    #     parent_directory = 'full_curve'
+    # else:
+    #     parent_directory = 't14_region_curve'
     
     transit_start = (-1 * t14 / 2) * 24
     transit_end = (t14 / 2) * 24
@@ -168,3 +168,16 @@ def horizontal_visibility_graph(points: list[tuple[int|float, int|float]], alrea
     return graph
 
 
+def points_range_wise(star_name: str, points: list[tuple[float, float]], t14: str, already_sorted: bool = False) -> tuple[list[tuple[float, float]], list[tuple[float, float]], list[tuple[float, float]]]:
+    if not already_sorted:
+        points.sort(key=lambda point: (point[0]))
+    
+    transit_start = (-1 * t14 / 2) * 24
+    transit_end = (t14 / 2) * 24
+    
+    
+    points_left: list[tuple[float, float]] = list(filter(lambda x: (x[0] < transit_start), points))
+    points_mid: list[tuple[float, float]] = list(filter(lambda x: (x[0] > transit_start and x[0] < transit_end), points))
+    points_right: list[tuple[float, float]] = list(filter(lambda x: (x[0] > transit_end), points))
+    
+    return points_left, points_mid, points_right
