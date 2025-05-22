@@ -136,7 +136,7 @@ def create_file_and_write_data_for_each_point_regionwise(star_name: str, directo
     
 
 
-def compute_star_data(star_name: str, compute_for_full_curve: bool, write: bool, bin_width: bool = None, recompute_star_data: bool = False, plot_folded_curve_subset: bool = True, plot_degree_of_each_point: bool = True, plot_deg_count_dist: bool = True, plot_semi_log_dist: bool = True, plot_log_log_dist: bool = True):
+def compute_star_data(star_name: str, compute_for_full_curve: bool, write: bool, bin_based_on_width: bool = False, bin_based_on_no_of_points: bool = False, bin_width: bool = None, recompute_star_data: bool = False, plot_folded_curve_subset: bool = True, plot_degree_of_each_point: bool = True, plot_deg_count_dist: bool = True, plot_semi_log_dist: bool = True, plot_log_log_dist: bool = True):
     
     if compute_for_full_curve:
         parent_directory = 'full_curve'
@@ -149,10 +149,10 @@ def compute_star_data(star_name: str, compute_for_full_curve: bool, write: bool,
     
     points = center_transit_in_the_curve(points, period_in_hours=(star_data.period * 24))
     
-    if bin_width:
-        # final_points = bin_points(points, bin_width=bin_width)
-        x, y = zip(*points)
-        final_points = custom_binning_with_in_transit_priority(phase=x, flux=y, period_in_days=star_data.period, t14_in_days=star_data.t14_in_days, num_in_transit_bins=80, num_out_of_transit_bins=800)
+    if bin_based_on_no_of_points:
+        final_points = custom_binning_with_in_transit_priority(points=points, t14_in_days=star_data.t14_in_days, num_in_transit_bins=80, num_out_of_transit_bins=800)
+    elif bin_based_on_width:
+        final_points = bin_points(points, bin_width=bin_width)
     else:
         final_points = points
         
@@ -292,10 +292,10 @@ def compute_star_data(star_name: str, compute_for_full_curve: bool, write: bool,
 
         # create_file_and_write_avg_k_for_each_region(star_name, avg_k_left, avg_k_mid, avg_k_right, parent_directory)
         
-        create_file_and_write_data_for_each_point(star_name, data_of_each_point_directory, x, new_y, degree_of_each_point, clustering_coefficient_of_each_point)
+        # create_file_and_write_data_for_each_point(star_name, data_of_each_point_directory, x, new_y, degree_of_each_point, clustering_coefficient_of_each_point)
         
-        if compute_for_full_curve == True:
-            create_file_and_write_data_for_each_point_regionwise(star_name, data_of_each_point_regionwise_directory, (left_points, deg_left_points, clust_coeff_left_points), (mid_points, deg_mid_points, clust_coeff_mid_points), (right_points, deg_right_points, clust_coeff_right_points))
+        # if compute_for_full_curve == True:
+        #     create_file_and_write_data_for_each_point_regionwise(star_name, data_of_each_point_regionwise_directory, (left_points, deg_left_points, clust_coeff_left_points), (mid_points, deg_mid_points, clust_coeff_mid_points), (right_points, deg_right_points, clust_coeff_right_points))
         
         pass
     

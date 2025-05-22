@@ -1,1 +1,5 @@
-print(list([1, 2, 3, 3, 3, 0, 0, 0, 0]).index(3))
+
+if ...:
+  print(2)
+elif ...: 
+  print(3)

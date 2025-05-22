@@ -32,31 +32,31 @@ def bin_points(points: list[tuple[float, float]], bin_width: float = 0.1) -> lis
 
 
 def custom_binning_with_in_transit_priority(
-    phase, flux, t14_in_days, period_in_days,
+    points: list[tuple[float, float]], t14_in_days,
     num_in_transit_bins=51, num_out_of_transit_bins=90
-):
+) -> list[tuple[float, float]]:
     """
     Bin the phase-folded light curve, giving higher resolution to the in-transit region.
-    Transit is centered at phase 0.
+    Assumes transit is centered at 0.
 
     Args:
-        phase (np.ndarray): Phase values, centered such that transit occurs at phase = 0.
-        flux (np.ndarray): Corresponding flux values.
+        points (list[tuple[float, float]]): Light curve, list of pairs of time and flux at an instance.
         t14_in_hours (float): Transit duration (T₁₄) in hours.
-        period_in_days (float): Orbital period in days.
-        num_in_transit_bins (int): Number of bins in the in-transit region.
-        num_out_of_transit_bins (int): Number of bins in the out-of-transit region.
+        num_in_transit_bins (int): Number of bins to create in the in-transit region.
+        num_out_of_transit_bins (int): Number of bins to create in the out-of-transit region.
 
     Returns:
         list[tuple[float, float]]: Binned phases and corresponding binned flux values.
     """
-    # Convert T14 to phase units
+    
     t14_in_hours = t14_in_days * 24
     in_transit_min = -t14_in_hours / 2
     in_transit_max = t14_in_hours / 2
     
-    phase = np.array(phase)
-    flux = np.array(flux)
+    x, y = zip(*points)
+    
+    phase = np.array(x)
+    flux = np.array(y)
 
     # Mask in-transit and out-of-transit points
     in_transit_mask = (phase >= in_transit_min) & (phase <= in_transit_max)

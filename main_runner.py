@@ -130,8 +130,8 @@ from main_star_data_computer import compute_star_data
 #                     )
 
 star_data, points = compute_star_data(
-  'OGLE-TR-1036', compute_for_full_curve=True, bin_width=1,
-  write=False,
+  'OGLE-TR-1021', compute_for_full_curve=True, write=False,
+  bin_based_on_no_of_points=True,
   plot_deg_count_dist=False,
   plot_degree_of_each_point=False,
   plot_log_log_dist=False,
