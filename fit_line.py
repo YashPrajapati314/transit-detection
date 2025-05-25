@@ -19,7 +19,7 @@ def line_fit_condition_filter(original_points: list[tuple[float, float]], condit
         return points, color_condition, a, b
 
 
-def line_fit(star_name: str, original_points: list[tuple[float, float]], full_curve: bool, filter_condition: Literal['between_a_and_b', 'first_a_after_first_b'], a: int|float, b: int|float, write: bool = False, semilog: bool = False) -> tuple[float, float, float, float]:
+def line_fit(star_name: str, original_points: list[tuple[float, float]], full_curve: bool, filter_condition: Literal['between_a_and_b', 'first_a_after_first_b'], a: int|float, b: int|float, grandparent_directory: Literal['precomputed_data', 'binned_precomputed_data'], write: bool = False, semilog: bool = False) -> tuple[float, float, float, float]:
     # original_points.sort(key=lambda x: x[0])
     points = list(original_points)
     points, color_condition, a, b = line_fit_condition_filter(original_points, condition=filter_condition, a=a, b=b)
@@ -76,9 +76,9 @@ def line_fit(star_name: str, original_points: list[tuple[float, float]], full_cu
     
     if write:
         if full_curve:
-            plt.savefig(f'./ogle_star_data/precomputed_data/full_curve/{directory}/Plots/{star_name}.png')
+            plt.savefig(f'./ogle_star_data/{grandparent_directory}/full_curve/{directory}/Plots/{star_name}.png')
         else:
-            plt.savefig(f'./ogle_star_data/precomputed_data/t14_region_curve/{directory}/Plots/{star_name}.png')
+            plt.savefig(f'./ogle_star_data/{grandparent_directory}/t14_region_curve/{directory}/Plots/{star_name}.png')
     
     # plt.show()
     

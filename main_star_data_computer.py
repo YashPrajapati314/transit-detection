@@ -8,14 +8,14 @@ from star_data_reader_plotter import get_folded_curve_subset, read_star_data
 from fit_line import line_fit, my_line_fit_algorithm
 from star_data_preprocessor import *
 
-def create_file_and_write_avg_k_for_each_region(star_name: str, avg_k_left: float, avg_k_mid: float, avg_k_right: float, parent_directory: str):
+def create_file_and_write_avg_k_for_each_region(star_name: str, avg_k_left: float, avg_k_mid: float, avg_k_right: float, grandparent_directory: Literal['precomputed_data', 'binned_precomputed_data']):
     new_data = {
         'star_name': star_name,
         'before_transit_start': avg_k_left,
         'during_transit': avg_k_mid,
         'after_transit_end': avg_k_right
     }
-    relative_path = f'./ogle_star_data/precomputed_data/avg_k_regionwise.csv'
+    relative_path = f'./ogle_star_data/{grandparent_directory}/avg_k_regionwise.csv'
     if os.path.exists(relative_path):
         df = pd.read_csv(relative_path, index_col=0)
     else:
@@ -26,13 +26,13 @@ def create_file_and_write_avg_k_for_each_region(star_name: str, avg_k_left: floa
     df.to_csv(relative_path)
 
 
-def create_file_and_write_plot_data(star_name: str, points: list[tuple[int | float, int | float]], plot_type: str, x_axis: str, y_axis: str, parent_directory: str):
+def create_file_and_write_plot_data(star_name: str, points: list[tuple[int | float, int | float]], plot_type: str, x_axis: str, y_axis: str, grandparent_directory: Literal['precomputed_data', 'binned_precomputed_data'], parent_directory: str):
     columns = [x_axis, y_axis]
     df = pd.DataFrame(columns=columns, data=points)
-    df.to_csv(f'./ogle_star_data/precomputed_data/{parent_directory}/{plot_type}/{star_name}.csv', index=False)
+    df.to_csv(f'./ogle_star_data/{grandparent_directory}/{parent_directory}/{plot_type}/{star_name}.csv', index=False)
 
 
-def create_file_and_write_line_fit_data(star_name: str, intercept, slope, sum_of_square_of_fit_errors, sum_of_square_of_all_errors, start_point, end_point, parent_directory: str, semilog: bool = False):
+def create_file_and_write_line_fit_data(star_name: str, intercept, slope, sum_of_square_of_fit_errors, sum_of_square_of_all_errors, start_point, end_point, grandparent_directory: Literal['precomputed_data', 'binned_precomputed_data'], parent_directory: str, semilog: bool = False):
     new_data = {
         'intercept': intercept,
         'slope': slope,
@@ -43,9 +43,9 @@ def create_file_and_write_line_fit_data(star_name: str, intercept, slope, sum_of
     }
     
     if semilog:
-        relative_path = f'./ogle_star_data/precomputed_data/{parent_directory}/Line Fit Semilog/line_fit_results.csv'
+        relative_path = f'./ogle_star_data/{grandparent_directory}/{parent_directory}/Line Fit Semilog/line_fit_results.csv'
     else:
-        relative_path = f'./ogle_star_data/precomputed_data/{parent_directory}/Line Fit/line_fit_results.csv'
+        relative_path = f'./ogle_star_data/{grandparent_directory}/{parent_directory}/Line Fit/line_fit_results.csv'
     
     if os.path.exists(relative_path):
         df = pd.read_csv(relative_path, index_col=0)
@@ -57,7 +57,7 @@ def create_file_and_write_line_fit_data(star_name: str, intercept, slope, sum_of
     df.to_csv(relative_path)
 
 
-def create_file_and_write_data_for_each_point(star_name: str, directory: str, x_coords: list[float], y_coords: list[float], degrees: list[tuple[int, int]], clustering_coefficients: list[float]):
+def create_file_and_write_data_for_each_point(star_name: str, directory: str, x_coords: list[float], y_coords: list[float], degrees: list[tuple[int, int]], clustering_coefficients: list[float], grandparent_directory: Literal['precomputed_data', 'binned_precomputed_data']):
     if len(x_coords) == len(y_coords) == len(degrees) == len(clustering_coefficients):
         star_file_path = os.path.join(directory, f'{star_name}.csv')
         n = len(x_coords)
@@ -88,7 +88,7 @@ def create_file_and_write_data_for_each_point(star_name: str, directory: str, x_
     else:
         print('Length mismatch error')
 
-def create_file_and_write_data_for_each_point_regionwise(star_name: str, directory: str, before_transit_data: tuple[list[tuple[float, float]], list[int], list[float]], during_transit_data: tuple[list[tuple[float, float]], list[int], list[float]], after_transit_data: tuple[list[tuple[float, float]], list[int], list[float]]):
+def create_file_and_write_data_for_each_point_regionwise(star_name: str, directory: str, before_transit_data: tuple[list[tuple[float, float]], list[int], list[float]], during_transit_data: tuple[list[tuple[float, float]], list[int], list[float]], after_transit_data: tuple[list[tuple[float, float]], list[int], list[float]], grandparent_directory: Literal['precomputed_data', 'binned_precomputed_data'], ):
     data_names = ['before-transit', 'during-transit', 'after-transit']
     data = [before_transit_data, during_transit_data, after_transit_data]
     avg_degree: list[float] = [None, None, None]
@@ -136,7 +136,12 @@ def create_file_and_write_data_for_each_point_regionwise(star_name: str, directo
     
 
 
-def compute_star_data(star_name: str, compute_for_full_curve: bool, write: bool, bin_based_on_width: bool = False, bin_based_on_no_of_points: bool = False, bin_width: bool = None, recompute_star_data: bool = False, plot_folded_curve_subset: bool = True, plot_degree_of_each_point: bool = True, plot_deg_count_dist: bool = True, plot_semi_log_dist: bool = True, plot_log_log_dist: bool = True):
+def compute_star_data(star_name: str, compute_for_full_curve: bool, write: bool, bin_based_on_width: bool = False, bin_based_on_no_of_points: bool = False, bin_width: bool = None, recompute_star_data: bool = False, plot_folded_curve_subset: bool = True, plot_degree_of_each_point: bool = True, plot_deg_count_dist: bool = True, plot_semi_log_dist: bool = True, plot_log_log_dist: bool = True, plot_vg: bool = False):
+    
+    if bin_based_on_no_of_points or bin_based_on_width:
+        grandparent_directory = 'binned_precomputed_data'
+    else:
+        grandparent_directory = 'precomputed_data'
     
     if compute_for_full_curve:
         parent_directory = 'full_curve'
@@ -145,7 +150,7 @@ def compute_star_data(star_name: str, compute_for_full_curve: bool, write: bool,
     
     star_data = read_star_data(star_name)
     
-    points = get_folded_curve_subset(star_data, use_full_curve=compute_for_full_curve, plot=plot_folded_curve_subset)
+    points = get_folded_curve_subset(star_data, write=False, use_full_curve=compute_for_full_curve, plot=plot_folded_curve_subset, grandparent_directory=grandparent_directory)
     
     points = center_transit_in_the_curve(points, period_in_hours=(star_data.period * 24))
     
@@ -156,14 +161,12 @@ def compute_star_data(star_name: str, compute_for_full_curve: bool, write: bool,
     else:
         final_points = points
         
-
-    if plot_folded_curve_subset:
-        plot_light_curve(star_name, points)
-        plot_light_curve(star_name, final_points)
+        
+    plot_light_curve(star_name, final_points, use_full_curve=compute_for_full_curve, grandparent_directory=grandparent_directory, plot=plot_folded_curve_subset, write=write)
     
-    return star_data, final_points
+    # return star_data, final_points
     
-    x, y = zip(*points)
+    x, y = zip(*final_points)
     n = len(x)
     new_y = [val*-1 for val in y]
     new_points = [(x[i], new_y[i]) for i in range(n)]
@@ -171,19 +174,16 @@ def compute_star_data(star_name: str, compute_for_full_curve: bool, write: bool,
     
     plot_types = ['Phased Folded Light Curve Points', 'Degree of Each Point', 'Degree Probability Distribution', 'Semilog Degree Probability Distribution', 'Log Log Degree Probability Distribution']
     
-    
-    points_for_rangewise_vg = get_folded_curve_subset(star_data, use_full_curve=True, plot=False)
-    
-    if compute_for_full_curve == True:
-        x_rangewise, y_rangewise = zip(*points_for_rangewise_vg)
-        n_rangewise = len(x_rangewise)
-        new_y_rangewise = [val*-1 for val in y_rangewise]
-        new_points_rangewise = [(x_rangewise[i], new_y_rangewise[i]) for i in range(n_rangewise)]
+    if compute_for_full_curve:
+        # points_for_rangewise_vg = final_points
+        # x_rangewise, y_rangewise = zip(*points_for_rangewise_vg)
+        # n_rangewise = len(x_rangewise)
+        # new_y_rangewise = [val*-1 for val in y_rangewise]
+        # new_points_rangewise = [(x_rangewise[i], new_y_rangewise[i]) for i in range(n_rangewise)]
 
-
-        left_points, mid_points, right_points = points_range_wise(star_name, new_points_rangewise, t14=star_data.t14_in_days)
+        left_points, mid_points, right_points = points_range_wise(star_name, new_points, t14=star_data.t14_in_days)
         
-        left_graph, mid_graph, right_graph = visibility_graph_range_wise(star_name, new_points_rangewise, full_curve=True, t14=star_data.t14_in_days)
+        left_graph, mid_graph, right_graph = visibility_graph_range_wise(star_name, new_points, full_curve=True, t14=star_data.t14_in_days, grandparent_directory=grandparent_directory)
 
         deg_left_points = degrees_of_points(left_graph)
         deg_mid_points = degrees_of_points(mid_graph)
@@ -203,29 +203,34 @@ def compute_star_data(star_name: str, compute_for_full_curve: bool, write: bool,
         print(avg_k_left, avg_k_mid, avg_k_right)
         print()
         
-        data_of_each_point_regionwise_directory = f'./ogle_star_data/precomputed_data/Regionwise Data of Each Point/'
+        data_of_each_point_regionwise_directory = f'./ogle_star_data/{grandparent_directory}/Regionwise Data of Each Point/'
     
-    data_of_each_point_directory = f'./ogle_star_data/precomputed_data/{parent_directory}/Data of Each Point/'
+    data_of_each_point_directory = f'./ogle_star_data/{grandparent_directory}/{parent_directory}/Data of Each Point/'
     
-    degree_of_each_point_file_path = f'./ogle_star_data/precomputed_data/{parent_directory}/Degree of Each Point/{star_name}.csv'
+    degree_of_each_point_file_path = f'./ogle_star_data/{grandparent_directory}/{parent_directory}/Degree of Each Point/{star_name}.csv'
     
-    if os.path.exists(degree_of_each_point_file_path) and not recompute_star_data:
-        print(f'Fetching data from {degree_of_each_point_file_path}')
-        df = pd.read_csv(degree_of_each_point_file_path)
-        degree_of_each_point: list[tuple[int, int]] = list(df.itertuples(index=False, name=None))
-        temp = plot_degree_vs_point_number([val[1] for val in degree_of_each_point], star_name, full_curve=compute_for_full_curve, plot=plot_degree_of_each_point, write=write)
-    else:
-        graph = visibility_graph(star_name=star_name, points=new_points, full_curve=compute_for_full_curve)
-        # plot_visibility_graph(new_points, graph)
+    # if os.path.exists(degree_of_each_point_file_path) and not recompute_star_data:
+    #     print(f'Fetching data from {degree_of_each_point_file_path}')
+    #     df = pd.read_csv(degree_of_each_point_file_path)
+    #     degree_of_each_point: list[tuple[int, int]] = list(df.itertuples(index=False, name=None))
+    #     temp = plot_degree_vs_point_number([val[1] for val in degree_of_each_point], star_name, full_curve=compute_for_full_curve, plot=plot_degree_of_each_point, write=write, grandparent_directory=grandparent_directory)
+    # else:
+    #     graph = visibility_graph(star_name=star_name, points=new_points, full_curve=compute_for_full_curve, grandparent_directory=grandparent_directory)
+    #     # plot_visibility_graph(new_points, graph)
         
-        deg_points = degrees_of_points(graph)
+    #     deg_points = degrees_of_points(graph)
         
-        degree_of_each_point = plot_degree_vs_point_number(deg_points, star_name, full_curve=compute_for_full_curve, plot=plot_degree_of_each_point, write=write)
+    #     degree_of_each_point = plot_degree_vs_point_number(deg_points, star_name, full_curve=compute_for_full_curve, plot=plot_degree_of_each_point, write=write, grandparent_directory=grandparent_directory)
         
-        # plot_visibility_graph(points, graph)
+    #     # plot_visibility_graph(points, graph)
         
-    graph = visibility_graph(star_name=star_name, points=new_points, full_curve=compute_for_full_curve)
+    graph = visibility_graph(star_name=star_name, points=new_points, full_curve=compute_for_full_curve, grandparent_directory=grandparent_directory)
+    
+    if plot_vg:
+        plot_visibility_graph(new_points, graph, full_curve=compute_for_full_curve, star_name=star_name)
+    
     deg_points = degrees_of_points(graph)
+    degree_of_each_point = plot_degree_vs_point_number(deg_points, star_name, full_curve=compute_for_full_curve, plot=plot_degree_of_each_point, write=write, grandparent_directory=grandparent_directory)
     
     clustering_coefficient_of_each_point: list[float] = clustering_coefficients_of_points(graph, deg_points)
 
@@ -235,11 +240,11 @@ def compute_star_data(star_name: str, compute_for_full_curve: bool, write: bool,
 
     degree_prob_dist = degree_count_probability_distribution(degree_of_each_point)
     
-    deg_count_dist = plot_degree_count_distribution(degree_prob_dist, star_name, full_curve=compute_for_full_curve, plot=plot_deg_count_dist, write=write)
+    deg_count_dist = plot_degree_count_distribution(degree_prob_dist, star_name, full_curve=compute_for_full_curve, plot=plot_deg_count_dist, write=write, grandparent_directory=grandparent_directory)
 
-    semi_log_dist = semi_log_plot_degree_distribution(degree_prob_dist, star_name, full_curve=compute_for_full_curve, plot=plot_semi_log_dist, write=write)
+    semi_log_dist = semi_log_plot_degree_distribution(degree_prob_dist, star_name, full_curve=compute_for_full_curve, plot=plot_semi_log_dist, write=write, grandparent_directory=grandparent_directory)
 
-    log_log_dist = log_log_plot_degree_distribution(degree_prob_dist, star_name, full_curve=compute_for_full_curve, plot=plot_log_log_dist, write=write)
+    log_log_dist = log_log_plot_degree_distribution(degree_prob_dist, star_name, full_curve=compute_for_full_curve, plot=plot_log_log_dist, write=write, grandparent_directory=grandparent_directory)
     
     # midpoint_near_point_number, points_to_consider_on_each_side = input('Midpoint near and neigbours: ').split()
     
@@ -277,25 +282,24 @@ def compute_star_data(star_name: str, compute_for_full_curve: bool, write: bool,
     # intercept, slope, sum_of_square_of_fit_errors, sum_of_square_of_all_errors, all_signed_errors = my_line_fit_algorithm(star_name, semi_log_dist, None, None, full_curve=compute_for_full_curve, semilog=True)
     
     if write:
+        
+        create_file_and_write_plot_data(star_name, points, plot_type='Phased Folded Light Curve Points', x_axis='Time', y_axis='Magnitude', parent_directory=parent_directory, grandparent_directory=grandparent_directory)
             
-        # create_file_and_write_plot_data(star_name, points, plot_type='Phased Folded Light Curve Points', x_axis='Time', y_axis='Magnitude', parent_directory=parent_directory)
-            
-        # create_file_and_write_plot_data(star_name, degree_of_each_point, plot_type='Degree of Each Point', x_axis='Point Number', y_axis='Degree', parent_directory=parent_directory)
+        create_file_and_write_plot_data(star_name, degree_of_each_point, plot_type='Degree of Each Point', x_axis='Point Number', y_axis='Degree', parent_directory=parent_directory, grandparent_directory=grandparent_directory)
         
-        # create_file_and_write_plot_data(star_name, deg_count_dist, plot_type='Degree Probability Distribution', x_axis='Degree', y_axis='Probability', parent_directory=parent_directory)
+        create_file_and_write_plot_data(star_name, deg_count_dist, plot_type='Degree Probability Distribution', x_axis='Degree', y_axis='Probability', parent_directory=parent_directory, grandparent_directory=grandparent_directory)
         
-        # create_file_and_write_plot_data(star_name, semi_log_dist, plot_type='Semilog Degree Probability Distribution', x_axis='Degree', y_axis='Log(Probability)', parent_directory=parent_directory)
+        create_file_and_write_plot_data(star_name, semi_log_dist, plot_type='Semilog Degree Probability Distribution', x_axis='Degree', y_axis='Log(Probability)', parent_directory=parent_directory, grandparent_directory=grandparent_directory)
         
-        # create_file_and_write_plot_data(star_name, log_log_dist, plot_type='Log Log Degree Probability Distribution', x_axis='Log(Degree)', y_axis='Log(Probability)', parent_directory=parent_directory)
+        create_file_and_write_plot_data(star_name, log_log_dist, plot_type='Log Log Degree Probability Distribution', x_axis='Log(Degree)', y_axis='Log(Probability)', parent_directory=parent_directory, grandparent_directory=grandparent_directory)
         
         # create_file_and_write_line_fit_data(star_name, intercept, slope, sum_of_square_of_fit_errors, sum_of_square_of_all_errors, a, b, parent_directory, semilog=for_semilog)
 
-        # create_file_and_write_avg_k_for_each_region(star_name, avg_k_left, avg_k_mid, avg_k_right, parent_directory)
+        create_file_and_write_data_for_each_point(star_name, data_of_each_point_directory, x, new_y, degree_of_each_point, clustering_coefficient_of_each_point, grandparent_directory=grandparent_directory)
         
-        # create_file_and_write_data_for_each_point(star_name, data_of_each_point_directory, x, new_y, degree_of_each_point, clustering_coefficient_of_each_point)
-        
-        # if compute_for_full_curve == True:
-        #     create_file_and_write_data_for_each_point_regionwise(star_name, data_of_each_point_regionwise_directory, (left_points, deg_left_points, clust_coeff_left_points), (mid_points, deg_mid_points, clust_coeff_mid_points), (right_points, deg_right_points, clust_coeff_right_points))
+        if compute_for_full_curve == True:
+            create_file_and_write_data_for_each_point_regionwise(star_name, data_of_each_point_regionwise_directory, (left_points, deg_left_points, clust_coeff_left_points), (mid_points, deg_mid_points, clust_coeff_mid_points), (right_points, deg_right_points, clust_coeff_right_points), grandparent_directory=grandparent_directory)
+            create_file_and_write_avg_k_for_each_region(star_name, avg_k_left, avg_k_mid, avg_k_right, grandparent_directory=grandparent_directory)
         
         pass
     

@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+from typing import Literal
 
 def plot_relation(df: pd.DataFrame, colour_map: list[str], xlabel='Region', ylabel='Average Clustering Coefficient', title='', plot: bool = True):
     avg_clust_coeff_before_transit = list(df['avg_clust_coeff_before_transit'])
@@ -45,8 +46,8 @@ def plot_non_transit_vs_transit(df: pd.DataFrame, colour_map: list[str], xlabel=
         plt.close()
         
 
-def plot_relation_for_all_stars():
-    df = pd.read_csv('../ogle_star_data/precomputed_data/Regionwise Data of Each Point/Average Data of Each Star.csv')
+def plot_relation_for_all_stars(grandparent_directory: Literal['precomputed_data', 'binned_precomputed_data']):
+    df = pd.read_csv(f'../ogle_star_data/{grandparent_directory}/Regionwise Data of Each Point/Average Data of Each Star.csv')
 
     complete_df = pd.DataFrame({
         'star': df['star_name'],

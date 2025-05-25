@@ -24,8 +24,8 @@ def plot_slope_ratio_vs_inter_ratio(complete_df: pd.DataFrame, colour_map: list[
         
 
 def plot_relation_for_all_stars():
-    df_t14 = pd.read_csv('../ogle_star_data/precomputed_data/t14_region_curve/Line Fit/line_fit_results.csv')
-    df_full = pd.read_csv('../ogle_star_data/precomputed_data/full_curve/Line Fit/line_fit_results.csv')
+    df_t14 = pd.read_csv('../ogle_star_data//t14_region_curve/Line Fit/line_fit_results.csv')
+    df_full = pd.read_csv('../ogle_star_data//full_curve/Line Fit/line_fit_results.csv')
 
     df_t14.rename(columns={'Unnamed: 0': 'star'}, inplace=True)
     df_full.rename(columns={'Unnamed: 0': 'star'}, inplace=True)

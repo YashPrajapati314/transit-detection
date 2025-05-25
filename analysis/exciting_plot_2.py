@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+from typing import Literal
 
 def plot_relation(df: pd.DataFrame, colour_map: list[str], xlabel='Non Transiting Region Average Degree', ylabel='Transiting Region Average Degree', title='', plot: bool = True):
     non_transit_avg_k = list(df['non_transit_avg_k'])
@@ -30,8 +31,8 @@ def plot_slope_ratio_vs_inter_ratio(complete_df: pd.DataFrame, colour_map: list[
         plt.close()
         
 
-def plot_relation_for_all_stars():
-    df = pd.read_csv('../ogle_star_data/precomputed_data/avg_k_regionwise.csv')
+def plot_relation_for_all_stars(grandparent_directory: Literal['precomputed_data', 'binned_precomputed_data']):
+    df = pd.read_csv(f'../ogle_star_data/{grandparent_directory}/avg_k_regionwise.csv')
 
     complete_df = pd.DataFrame({
         'star': df['star_name'],
@@ -56,5 +57,5 @@ def plot_relation_for_all_stars():
     complete_df.to_csv('temp.csv')
 
 
-plot_relation_for_all_stars()
+plot_relation_for_all_stars(grandparent_directory=...)
 

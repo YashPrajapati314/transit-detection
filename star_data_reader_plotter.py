@@ -2,6 +2,7 @@ import os
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from typing import Literal
 
 class StarData:
     def __init__(self, star_name: str, light_curve: pd.DataFrame, period: float, transit_epoch: float, t14_in_days: float):
@@ -53,7 +54,7 @@ def read_star_data(star_name: str, main_directory = 'ogle_star_data', light_curv
 
 
 
-def get_folded_curve_subset(star_data: StarData, use_full_curve: bool = True, plot=True):
+def get_folded_curve_subset(star_data: StarData, write: bool, grandparent_directory: Literal['precomputed_data', 'binned_precomputed_data'], use_full_curve: bool = True, plot=True):
     star_name = star_data.star_name
     light_curve = star_data.light_curve
     period = star_data.period
@@ -99,10 +100,11 @@ def get_folded_curve_subset(star_data: StarData, use_full_curve: bool = True, pl
     # plt.grid(True)
     plt.tight_layout()
     
-    if use_full_curve:
-        plt.savefig(f'./ogle_star_data/precomputed_data/full_curve/Phased Folded Light Curve Points/Plots/{star_name}.png')
-    else:
-        plt.savefig(f'./ogle_star_data/precomputed_data/t14_region_curve/Phased Folded Light Curve Points/Plots/{star_name}.png')
+    if write:
+        if use_full_curve:
+            plt.savefig(f'./ogle_star_data/{grandparent_directory}/full_curve/Phased Folded Light Curve Points/Plots/{star_name}.png')
+        else:
+            plt.savefig(f'./ogle_star_data/{grandparent_directory}/t14_region_curve/Phased Folded Light Curve Points/Plots/{star_name}.png')
 
     if plot:
         plt.show()

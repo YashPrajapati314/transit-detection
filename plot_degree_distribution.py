@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import math
 from typing import Literal
 
-def plotter(type: Literal['degree_count_distibution', 'semi_log_plot', 'log_log_plot'], points, star_name, full_curve: bool, scatter=True, name='', xlabel='', ylabel='', plot: bool=True, write: bool = False):
+def plotter(type: Literal['degree_count_distibution', 'semi_log_plot', 'log_log_plot'], points, star_name, full_curve: bool, scatter=True, *, name='', xlabel='', ylabel='', plot: bool=True, write: bool = False, grandparent_directory: Literal['precomputed_data', 'binned_precomputed_data']):
     x, y = zip(*points)
     if type == 'degree_count_distibution' or type == 'log_log_plot':
         if scatter:
@@ -25,9 +25,9 @@ def plotter(type: Literal['degree_count_distibution', 'semi_log_plot', 'log_log_
         
     if write:
         if full_curve:
-            plt.savefig(f'./ogle_star_data/precomputed_data/full_curve/{directory}/Plots/{star_name}.png')
+            plt.savefig(f'./ogle_star_data/{grandparent_directory}/full_curve/{directory}/Plots/{star_name}.png')
         else:
-            plt.savefig(f'./ogle_star_data/precomputed_data/t14_region_curve/{directory}/Plots/{star_name}.png')
+            plt.savefig(f'./ogle_star_data/{grandparent_directory}/t14_region_curve/{directory}/Plots/{star_name}.png')
     else:
         print('No data was written')
     
@@ -37,7 +37,7 @@ def plotter(type: Literal['degree_count_distibution', 'semi_log_plot', 'log_log_
     plt.close()
     
     
-def plot_degree_vs_point_number(deg_points: list[int], star_name, full_curve: bool, xlabel='Point Number', ylabel='Degree', plot: bool = True, write: bool = False) -> list[tuple[int, int]]:
+def plot_degree_vs_point_number(deg_points: list[int], star_name, full_curve: bool, grandparent_directory: Literal['precomputed_data', 'binned_precomputed_data'], xlabel='Point Number', ylabel='Degree', plot: bool = True, write: bool = False) -> list[tuple[int, int]]:
     x = [i for i in range(len(deg_points))]
     y = deg_points
     
@@ -48,9 +48,9 @@ def plot_degree_vs_point_number(deg_points: list[int], star_name, full_curve: bo
     
     if write:
         if full_curve:
-            plt.savefig(f'./ogle_star_data/precomputed_data/full_curve/Degree of Each Point/Plots/{star_name}.png')
+            plt.savefig(f'./ogle_star_data/{grandparent_directory}/full_curve/Degree of Each Point/Plots/{star_name}.png')
         else:
-            plt.savefig(f'./ogle_star_data/precomputed_data/t14_region_curve/Degree of Each Point/Plots/{star_name}.png')
+            plt.savefig(f'./ogle_star_data/{grandparent_directory}/t14_region_curve/Degree of Each Point/Plots/{star_name}.png')
     else:
         print('No data was written')
     
@@ -64,20 +64,20 @@ def plot_degree_vs_point_number(deg_points: list[int], star_name, full_curve: bo
     return points
     
 
-def plot_degree_count_distribution(degree_count_distibution: dict[int, int|float], star_name, full_curve: bool, scatter=True, xlabel='Degree', ylabel='Probability/Occurence', plot: bool = True, write: bool = False) -> list[tuple[int, int|float]]:
+def plot_degree_count_distribution(degree_count_distibution: dict[int, int|float], star_name, full_curve: bool, grandparent_directory: Literal['precomputed_data', 'binned_precomputed_data'], scatter=True, xlabel='Degree', ylabel='Probability/Occurence', plot: bool = True, write: bool = False) -> list[tuple[int, int|float]]:
     points = degree_count_distibution.items()
-    plotter('degree_count_distibution', points, star_name, full_curve, scatter, f'{star_name} Degree Distribution', xlabel, ylabel, plot=plot, write=write)
+    plotter('degree_count_distibution', points, star_name, full_curve, scatter, name=f'{star_name} Degree Distribution', xlabel=xlabel, ylabel=ylabel, plot=plot, write=write, grandparent_directory=grandparent_directory)
     return points
 
 
-def semi_log_plot_degree_distribution(degree_count_distibution: dict[int, int|float], star_name, full_curve: bool, scatter=True, xlabel='Degree', ylabel='Probability/Occurence', plot: bool = True, write: bool = False) -> list[tuple[int, int|float]]:
+def semi_log_plot_degree_distribution(degree_count_distibution: dict[int, int|float], star_name, full_curve: bool, grandparent_directory: Literal['precomputed_data', 'binned_precomputed_data'], scatter=True, xlabel='Degree', ylabel='Probability/Occurence', plot: bool = True, write: bool = False) -> list[tuple[int, int|float]]:
     points = degree_count_distibution.items()
     semi_log_probability_distribution = [(x, math.log(y)) for x, y in points]
-    plotter('semi_log_plot', points, star_name, full_curve, scatter, f'{star_name} Semilog Plot Degree Distribution', xlabel, ylabel, plot=plot, write=write)
+    plotter('semi_log_plot', points, star_name, full_curve, scatter, name=f'{star_name} Semilog Plot Degree Distribution', xlabel=xlabel, ylabel=ylabel, plot=plot, write=write, grandparent_directory=grandparent_directory)
     return semi_log_probability_distribution
 
-def log_log_plot_degree_distribution(degree_count_distibution: dict[int, int|float], star_name, full_curve: bool, scatter=True, xlabel='log(degree)', ylabel='log(P)', plot: bool = True, write: bool = False) -> list[tuple[float, float]]:
+def log_log_plot_degree_distribution(degree_count_distibution: dict[int, int|float], star_name, full_curve: bool, grandparent_directory: Literal['precomputed_data', 'binned_precomputed_data'], scatter=True, xlabel='log(degree)', ylabel='log(P)', plot: bool = True, write: bool = False) -> list[tuple[float, float]]:
     points = degree_count_distibution.items()
     log_probability_distribution = [(math.log(x), math.log(y)) for x, y in points]
-    plotter('log_log_plot', log_probability_distribution, star_name, full_curve, scatter, f'{star_name} Logarithmic Plot Degree Distribution', xlabel, ylabel, plot=plot, write=write)
+    plotter('log_log_plot', log_probability_distribution, star_name, full_curve, scatter, name=f'{star_name} Logarithmic Plot Degree Distribution', xlabel=xlabel, ylabel=ylabel, plot=plot, write=write, grandparent_directory=grandparent_directory)
     return log_probability_distribution

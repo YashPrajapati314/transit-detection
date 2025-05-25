@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+from typing import Literal
 
 def plot_relation(df: pd.DataFrame, colour_map: list[str], xlabel='Region', ylabel='Average Degree', title='', plot: bool = True):
     before_transit_avg_k = list(df['before_transit_avg_k'])
@@ -29,8 +30,8 @@ def plot_relation(df: pd.DataFrame, colour_map: list[str], xlabel='Region', ylab
         
         
 
-def plot_relation_for_all_stars():
-    df = pd.read_csv('../ogle_star_data/precomputed_data/average_k_regionwise/avg_k_regionwise.csv')
+def plot_relation_for_all_stars(grandparent_directory: Literal['precomputed_data', 'binned_precomputed_data']):
+    df = pd.read_csv(f'../ogle_star_data/{grandparent_directory}/average_k_regionwise/avg_k_regionwise.csv')
 
     complete_df = pd.DataFrame({
         'star': df['star_name'],

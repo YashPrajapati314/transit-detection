@@ -129,14 +129,33 @@ from main_star_data_computer import compute_star_data
 #                       plot_semi_log_dist=False
 #                     )
 
-star_data, points = compute_star_data(
-  'OGLE-TR-1021', compute_for_full_curve=True, write=False,
-  bin_based_on_no_of_points=True,
-  plot_deg_count_dist=False,
-  plot_degree_of_each_point=False,
-  plot_log_log_dist=False,
-  plot_semi_log_dist=False
-)
+
+for condition in [True, False]:
+  for id in range(1001, 1100):
+      star_name = f'OGLE-TR-{id}'
+      
+      star_data, points = compute_star_data(
+        star_name, compute_for_full_curve=condition, write=True,
+        bin_based_on_no_of_points=True,
+        plot_deg_count_dist=False,
+        plot_degree_of_each_point=False,
+        plot_log_log_dist=False,
+        plot_semi_log_dist=False,
+        plot_folded_curve_subset=False
+      )
+      
+  confirmed_transits = ['OGLE-TR-10', 'OGLE-TR-56', 'OGLE-TR-111', 'OGLE-TR-132', 'OGLE-TR-211']
+      
+  for star_name in confirmed_transits:
+      star_data, points = compute_star_data(
+        star_name, compute_for_full_curve=condition, write=True,
+        bin_based_on_no_of_points=True,
+        plot_deg_count_dist=False,
+        plot_degree_of_each_point=False,
+        plot_log_log_dist=False,
+        plot_semi_log_dist=False,
+        plot_folded_curve_subset=False
+      )
 
 # 1038
 # 1052

@@ -3,6 +3,7 @@ import networkx as nx
 import numpy as np
 import gzip
 import pickle
+from typing import Literal
 
 def load_graph(star_name: str, path: str) -> list[list[int]] | None:
     if os.path.exists(path):
@@ -15,14 +16,14 @@ def load_graph(star_name: str, path: str) -> list[list[int]] | None:
     else:
         return None
 
-def visibility_graph(star_name: str, points: list[tuple[int|float, int|float]], full_curve: bool, already_sorted: bool = False, region_wise: bool = False, region: int = 0) -> list[list[int]]:
+def visibility_graph(star_name: str, points: list[tuple[int|float, int|float]], full_curve: bool, grandparent_directory: Literal['precomputed_data', 'binned_precomputed_data'], already_sorted: bool = False, region_wise: bool = False, region: int = 0) -> list[list[int]]:
     if full_curve:
         parent_directory = 'full_curve'
     else:
         parent_directory = 't14_region_curve'
         
     if region_wise:
-        directory = os.path.join('.', 'ogle_star_data', 'precomputed_data', 'Visibility Graph Regionwise')
+        directory = os.path.join('.', 'ogle_star_data', grandparent_directory, 'Visibility Graph Regionwise')
         match(region):
             case 1:
                 add_to_path = 'before-transit'
@@ -34,7 +35,7 @@ def visibility_graph(star_name: str, points: list[tuple[int|float, int|float]], 
                 add_to_path = 'error'
         rel_path = os.path.join(directory, f'{star_name}_{add_to_path}.pkl.gz')
     else:
-        directory = os.path.join('.', 'ogle_star_data', 'precomputed_data', parent_directory, 'Visibility Graph')
+        directory = os.path.join('.', 'ogle_star_data', grandparent_directory, parent_directory, 'Visibility Graph')
         rel_path = os.path.join(directory, f'{star_name}.pkl.gz')
         
     
@@ -93,7 +94,7 @@ def visibility_graph(star_name: str, points: list[tuple[int|float, int|float]], 
     return graph
 
 
-def visibility_graph_range_wise(star_name: str, points: list[tuple[int|float, int|float]], full_curve: bool, t14: float, tc: float = 0, already_sorted: bool = False) -> tuple[list[list[int]], list[list[int]], list[list[int]]]:
+def visibility_graph_range_wise(star_name: str, points: list[tuple[int|float, int|float]], full_curve: bool, t14: float, grandparent_directory: Literal['precomputed_data', 'binned_precomputed_data'], already_sorted: bool = False) -> tuple[list[list[int]], list[list[int]], list[list[int]]]:
     if not already_sorted:
         points.sort(key=lambda point: (point[0]))
     
@@ -118,9 +119,9 @@ def visibility_graph_range_wise(star_name: str, points: list[tuple[int|float, in
     # print(points_left)
     # print('!!!')
     
-    before_transit_vg = visibility_graph(star_name, points_left, full_curve=False, already_sorted=True, region_wise=True, region=1)
-    during_transit_vg = visibility_graph(star_name, points_mid, full_curve=False, already_sorted=True, region_wise=True, region=2)
-    after_transit_vg = visibility_graph(star_name, points_right, full_curve=False, already_sorted=True, region_wise=True, region=3)
+    before_transit_vg = visibility_graph(star_name, points_left, full_curve=False, already_sorted=True, region_wise=True, region=1, grandparent_directory=grandparent_directory)
+    during_transit_vg = visibility_graph(star_name, points_mid, full_curve=False, already_sorted=True, region_wise=True, region=2, grandparent_directory=grandparent_directory)
+    after_transit_vg = visibility_graph(star_name, points_right, full_curve=False, already_sorted=True, region_wise=True, region=3, grandparent_directory=grandparent_directory)
     
     return (before_transit_vg, during_transit_vg, after_transit_vg)
 

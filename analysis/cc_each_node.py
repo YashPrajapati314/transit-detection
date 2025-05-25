@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+from typing import Literal
 
 
 def plot_each_point_details(df: pd.DataFrame, xlabel='Point Number', ylabel='Clustering Coefficient', title='', plot: bool = True):
@@ -15,9 +16,9 @@ def plot_each_point_details(df: pd.DataFrame, xlabel='Point Number', ylabel='Clu
         plt.close()
         
 
-def plot_relation_for_star(star_name: str):
+def plot_relation_for_star(star_name: str, grandparent_directory: Literal['precomputed_data', 'binned_precomputed_data']):
     
-    df = pd.read_csv(f'../ogle_star_data/precomputed_data/t14_region_curve/Data of Each Point/{star_name}.csv')
+    df = pd.read_csv(f'../ogle_star_data/{grandparent_directory}/t14_region_curve/Data of Each Point/{star_name}.csv')
 
     complete_df = pd.DataFrame({
         'point_num': df['Point Number'],
@@ -41,4 +42,4 @@ def plot_relation_for_star(star_name: str):
     complete_df.to_csv('temp.csv')
 
 
-plot_relation_for_star('OGLE-TR-1021')
+plot_relation_for_star('OGLE-TR-1021', grandparent_directory=...)
